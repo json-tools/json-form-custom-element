@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>JSON Form web-component demo</title>
+        <link rel="stylesheet" href="https://unpkg.com/@ubio/css@1.3.11/index.css"></link>
+        <script src="https://unpkg.com/json-viewer-custom-element"></script>
+        <script src="../dist/custom-element.js"></script>
+        <script>
+            const q = document.querySelector.bind(document);
+
+            const schema = {
+                "type": "object",
+                "properties": {
+                    "enabled": {
+                        "ui": {
+                            "widget": "switch"
+                        },
+                        "type": "boolean",
+                        "title": "enable",
+                        "description": "Enable editing"
+                    },
+                    "form": {
+                        "type": "object",
+                        "properties": {
+                            "disableDemo": {
+                                "ui": {
+                                    "rule": {
+                                        "action": "disable",
+                                        "path": "/enabled",
+                                        "condition": {
+                                            "const": false,
+                                            "default": false
+                                        }
+                                    }
+                                },
+                                "type": "string",
+                                "title": "Rule: disable text field",
+                                "description": "This field will be enabled when switch turned on"
+                            },
+                            "hideDemo": {
+                                "ui": {
+                                    "rule": {
+                                        "action": "hide",
+                                        "path": "/enabled",
+                                        "condition": {
+                                            "const": false,
+                                            "default": false
+                                        }
+                                    }
+                                },
+                                "type": "string",
+                                "title": "Rule: hide text field",
+                                "description": "This field will be shown when switch turned on"
+                            },
+                            "disableNumericDemo": {
+                                "ui": {
+                                    "rule": {
+                                        "action": "disable",
+                                        "path": "/enabled",
+                                        "condition": {
+                                            "const": false,
+                                            "default": false
+                                        }
+                                    }
+                                },
+                                "type": "number",
+                                "title": "Rule: disable numeric",
+                                "description": "This numeric field will be enabled when switch turned on"
+                            },
+                            "hideNumericDemo": {
+                                "ui": {
+                                    "rule": {
+                                        "action": "hide",
+                                        "path": "/enabled",
+                                        "condition": {
+                                            "const": false,
+                                            "default": false
+                                        }
+                                    }
+                                },
+                                "type": "number",
+                                "title": "Rule: hide numeric",
+                                "description": "This numeric field will be shown when switch turned on"
+                            },
+                            "disableCheckboxDemo": {
+                                "ui": {
+                                    "rule": {
+                                        "action": "disable",
+                                        "path": "/enabled",
+                                        "condition": {
+                                            "const": false,
+                                            "default": false
+                                        }
+                                    },
+                                    "widget": "checkbox"
+                                },
+                                "type": "boolean",
+                                "title": "Rule: disable checkbox",
+                                "description": "This checkbox will be enabled when switch turned on"
+                            },
+                            "disableSwitchDemo": {
+                                "ui": {
+                                    "rule": {
+                                        "action": "disable",
+                                        "path": "/enabled",
+                                        "condition": {
+                                            "const": false,
+                                            "default": false
+                                        }
+                                    },
+                                    "widget": "switch"
+                                },
+                                "type": "boolean",
+                                "title": "Rule: disable switch",
+                                "description": "This switch will be enabled when switch turned on"
+                            },
+                            "nestedForm": {
+                                "ui": {
+                                    "rule": {
+                                        "action": "disable",
+                                        "path": "/enabled",
+                                        "condition": {
+                                            "const": false,
+                                            "default": false
+                                        }
+                                    }
+                                },
+                                "type": "object",
+                                "properties": {
+                                    "disableDemo": {
+                                        "type": "string",
+                                        "title": "Rule: disable nested form",
+                                        "description": "This field will be enabled when switch turned on"
+                                    }
+                                }
+                            },
+                            "otherNestedForm": {
+                                "ui": {
+                                    "rule": {
+                                        "action": "hide",
+                                        "path": "/enabled",
+                                        "condition": {
+                                            "const": false,
+                                            "default": false
+                                        }
+                                    }
+                                },
+                                "type": "object",
+                                "properties": {
+                                    "hideDemo": {
+                                        "type": "string",
+                                        "title": "Rule: hide nested form",
+                                        "description": "This field will be hidden when switch turned on"
+                                    }
+                                }
+                            },
+                            "array": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "enabled": {
+                                            "ui": {
+                                                "widget": "switch"
+                                            },
+                                            "type": "boolean",
+                                            "title": "enable",
+                                            "description": "Enable editing"
+                                        },
+                                        "hideDemo": {
+                                            "ui": {
+                                                "rule": {
+                                                    "action": "disable",
+                                                    "path": "../enabled",
+                                                    "condition": {
+                                                        "const": false,
+                                                        "default": false
+                                                    }
+                                                }
+                                            },
+                                            "type": "string",
+                                            "title": "Rule: disable based on local condition",
+                                            "description": "Local condition demo"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            window.addEventListener('load', () => {
+                const form = q('json-form');
+                const viewer = q('json-viewer');
+                form.setAttribute('schema', JSON.stringify(schema));
+                connect(form, viewer);
+            });
+
+            function connect(form, viewer) {
+                form.addEventListener('change', () =>
+                    viewer.setAttribute('value', form.getAttribute('value'))
+                );
+            }
+
+        </script>
+        <style>
+            json-viewer { margin: 50px; display: block; }
+            json-form { margin: 50px; display: block; }
+        </style>
+    </head>
+    <body>
+        <json-form></json-form> 
+        <json-viewer></json-viewer>
+    </body>
+</html>
