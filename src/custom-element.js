@@ -28,6 +28,7 @@ customElements.define('json-form',
             const shadowRoot = this.attachShadow({mode: 'open'});
             shadowRoot.appendChild(appStyles);
             shadowRoot.appendChild(appRoot);
+            this._appRoot = appRoot;
 
             this._schema = readAttribute(this, 'schema', {});
             this._value = readAttribute(this, 'value', null);
@@ -36,7 +37,7 @@ customElements.define('json-form',
         }
 
         connectedCallback() {
-            const app = Elm.JsonFormCustomElement.embed(appRoot, {
+            const app = Elm.JsonFormCustomElement.embed(this._appRoot, {
                 schema: this._schema,
                 value: this._value,
                 config: this._config
