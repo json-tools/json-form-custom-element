@@ -3,20 +3,21 @@ port module CustomElement exposing (init, subscriptions, update, view)
 --import Html.Attributes exposing (class, classList)
 --import Html.Events exposing (onClick)
 
+import Dict
 import Html exposing (Html, div, h3, text)
 import Json.Decode exposing (Value, decodeValue)
 import Json.Encode as Encode
 import Json.Form
 import Json.Form.Config exposing (Config)
-import Json.Schema.Definitions
-import Json.Value as JsonValue exposing (decoder)
+import Json.Schema.Definitions exposing (Schema)
+import Json.Value as JsonValue exposing (JsonValue, decoder)
 
 
 type alias Model =
     { form : Json.Form.Model
     , config : Config
     , schema : Json.Schema.Definitions.Schema
-    , editedValue : Maybe JsonValue.JsonValue
+    , value : Maybe JsonValue.JsonValue
     }
 
 
@@ -39,12 +40,30 @@ init v =
                 |> decodeValue (Json.Decode.field "value" JsonValue.decoder)
                 |> Result.toMaybe
     in
-    { form = Json.Form.init config schema value
-    , editedValue = value
-    , schema = schema
-    , config = config
-    }
-        ! []
+    initForm schema value config
+
+
+initForm : Schema -> Maybe JsonValue -> Config -> ( Model, Cmd Msg )
+initForm schema value config =
+    let
+        form =
+            value |> Json.Form.init config schema
+    in
+    ( { form = form
+      , value = form.value
+      , schema = schema
+      , config = config
+      }
+    , [ ( "value"
+        , form.value
+            |> Maybe.map JsonValue.encode
+            |> Maybe.withDefault Encode.null
+        )
+      , ( "isValid", form.errors |> Dict.isEmpty |> Encode.bool )
+      ]
+        |> Encode.object
+        |> valueUpdated
+    )
 
 
 type Msg
@@ -76,11 +95,7 @@ update message model =
                         |> decodeValue Json.Schema.Definitions.decoder
                         |> Result.withDefault Json.Schema.Definitions.blankSchema
             in
-            { model
-                | schema = schema
-                , form = Json.Form.init model.config schema model.editedValue
-            }
-                ! []
+            initForm schema model.value model.config
 
         ChangeValue v ->
             let
@@ -89,18 +104,14 @@ update message model =
                         |> decodeValue JsonValue.decoder
                         |> Result.toMaybe
             in
-            { model
-                | editedValue = value
-                , form = Json.Form.init model.config model.schema value
-            }
-                ! []
+            initForm model.schema value model.config
 
         JsonFormMsg msg ->
             let
                 ( ( m, cmd ), exMsg ) =
                     Json.Form.update msg model.form
 
-                ( editedValue, exCmd ) =
+                ( value, exCmd ) =
                     case exMsg of
                         Json.Form.UpdateValue v isValid ->
                             ( v
@@ -112,15 +123,15 @@ update message model =
                                   )
                                 , ( "isValid", Encode.bool isValid )
                                 ]
-                                |> value
+                                |> valueUpdated
                             )
 
                         _ ->
-                            ( model.editedValue, Cmd.none )
+                            ( model.value, Cmd.none )
             in
             { model
                 | form = m
-                , editedValue = editedValue
+                , value = value
             }
                 ! [ cmd |> Cmd.map JsonFormMsg, exCmd ]
 
@@ -135,7 +146,7 @@ view model =
 port valueChange : (Value -> msg) -> Sub msg
 
 
-port value : Value -> Cmd msg
+port valueUpdated : Value -> Cmd msg
 
 
 port schemaChange : (Value -> msg) -> Sub msg

@@ -3,6 +3,10 @@ const css = require('../../json-form/stylesheets/standalone.css').toString();
 
 
 function readAttribute(node, name, defValue) {
+    if (!node.hasAttribute(name)) {
+        return defValue;
+    }
+
     try {
         return JSON.parse(node.getAttribute(name));
     } catch (e) {
@@ -31,8 +35,9 @@ customElements.define('json-form',
             this._appRoot = appRoot;
 
             this._schema = readAttribute(this, 'schema', {});
-            this._value = readAttribute(this, 'value', null);
+            this._value = readAttribute(this, 'value', {});
             this._config = readAttribute(this, 'config');
+            this._muteAttributeChange = false;
 
         }
 
@@ -43,19 +48,18 @@ customElements.define('json-form',
                 config: this._config
             });
             this.app = app;
-            this.muteAttributeChange = false;
 
-            app.ports.value.subscribe(({ value, isValid }) => {
+            app.ports.valueUpdated.subscribe(({ value, isValid }) => {
                 const event = new CustomEvent('change', { detail: { value, isValid } });
-                this.muteAttributeChange = true;
+                this._muteAttributeChange = true;
                 this.setAttribute('value', JSON.stringify(value));
-                this.muteAttributeChange = false;
                 this.dispatchEvent(event);
             });
         }
 
         attributeChangedCallback(name, oldValue, newValue) {
-            if (this.muteAttributeChange) {
+            if (this._muteAttributeChange) {
+                this._muteAttributeChange = false;
                 return;
             }
 
