@@ -27,7 +27,7 @@ init v =
         schema =
             v
                 |> decodeValue (Json.Decode.field "schema" Json.Schema.Definitions.decoder)
-                |> Result.mapError Debug.log
+                |> Result.mapError (Debug.log "schema parse error")
                 |> Result.withDefault Json.Schema.Definitions.blankSchema
 
         config =
@@ -47,7 +47,9 @@ initForm : Schema -> Maybe JsonValue -> Config -> ( Model, Cmd Msg )
 initForm schema value config =
     let
         form =
-            value |> Json.Form.init config schema
+            value
+                |> Json.Form.init config schema
+                |> Tuple.first
     in
     ( { form = form
       , value = form.value
@@ -79,14 +81,17 @@ update message model =
         ChangeConfig v ->
             case v |> decodeValue Json.Form.Config.decoder of
                 Ok config ->
-                    { model
+                    ( { model
                         | config = config
                         , form = model.form |> Json.Form.updateConfig config
-                    }
-                        ! []
+                      }
+                    , Cmd.none
+                    )
 
                 Err _ ->
-                    model ! []
+                    ( model
+                    , Cmd.none
+                    )
 
         ChangeSchema v ->
             let
@@ -129,11 +134,12 @@ update message model =
                         _ ->
                             ( model.value, Cmd.none )
             in
-            { model
+            ( { model
                 | form = m
                 , value = value
-            }
-                ! [ cmd |> Cmd.map JsonFormMsg, exCmd ]
+              }
+            , Cmd.batch [ cmd |> Cmd.map JsonFormMsg, exCmd ]
+            )
 
 
 view : Model -> Html Msg

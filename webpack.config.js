@@ -16,7 +16,7 @@ var common = {
         'custom-element': './src/custom-element'
     },
     output: {
-        path: path.join(__dirname, "dist"),
+        path: path.join(__dirname, "build"),
         // webpack -p automatically adds hash when building for production
         filename: '[name].js'
     },
@@ -103,9 +103,7 @@ if (TARGET_ENV === "development") {
                     test: /\.elm$/,
                     exclude: [/elm-stuff/, /node_modules/],
                     use: [
-                        {
-                            loader: "elm-hot-loader"
-                        },
+                        // { loader: "elm-hot-webpack-loader" },
                         {
                             loader: "elm-webpack-loader",
                             // add Elm's debug overlay to output
@@ -132,7 +130,7 @@ if (TARGET_ENV === "production") {
     module.exports = merge(common, {
         plugins: [
             // Delete everything from output directory and report to user
-            new CleanWebpackPlugin(["dist"], {
+            new CleanWebpackPlugin(["build"], {
                 root: __dirname,
                 exclude: [],
                 verbose: true,
@@ -158,6 +156,7 @@ if (TARGET_ENV === "production") {
                     ]
                 }
             ]
-        }
+        },
+        performance: false
     });
 }

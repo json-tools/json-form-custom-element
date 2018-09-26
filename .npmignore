@@ -1,5 +1,5 @@
 tests
 elm-stuff
-build
 src
 webpack.config.js
+scripts
