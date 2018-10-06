@@ -42,10 +42,13 @@ customElements.define('json-form',
         }
 
         connectedCallback() {
-            const app = Elm.JsonFormCustomElement.embed(this._appRoot, {
-                schema: this._schema,
-                value: this._value,
-                config: this._config
+            const app = Elm.Elm.JsonFormCustomElement.init({
+                node: this._appRoot,
+                flags: {
+                    schema: this._schema,
+                    value: this._value,
+                    config: this._config
+                }
             });
             this.app = app;
 
