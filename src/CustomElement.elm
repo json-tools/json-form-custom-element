@@ -62,6 +62,7 @@ initForm schema value config =
             |> Maybe.withDefault Encode.null
         )
       , ( "isValid", form.errors |> Dict.isEmpty |> Encode.bool )
+      , ( "errors", form.errors |> Encode.dict (String.join "/") (Encode.list Encode.string) )
       ]
         |> Encode.object
         |> valueUpdated
@@ -118,7 +119,7 @@ update message model =
 
                 ( value, exCmd ) =
                     case exMsg of
-                        Json.Form.UpdateValue v isValid ->
+                        Json.Form.UpdateValue v errors ->
                             ( v
                             , Encode.object
                                 [ ( "value"
@@ -126,7 +127,8 @@ update message model =
                                         |> Maybe.withDefault JsonValue.NullValue
                                         |> JsonValue.encode
                                   )
-                                , ( "isValid", Encode.bool isValid )
+                                , ( "isValid", errors |> Dict.isEmpty |> Encode.bool )
+                                , ( "errors", errors |> Encode.dict (String.join "/") (Encode.list Encode.string) )
                                 ]
                                 |> valueUpdated
                             )
