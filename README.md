@@ -29,6 +29,9 @@ Attributes:
   - textFieldStyle: "outlined" | "filled" (string) - style of text fields
   - name: (string) - name of a form, should be unique on the page, used to generate unique ids of form elements
 
+Events:
+  - change: `CustomEvent` with detail `{ isValid: boolean, value, errors: { [path]: [string] }}`
+
 Styles:
   - `--object-heading-indent`: padding of a heading of a nested object, default `0px`
   - `--nested-object-padding`: padding of a nested object, default `0px`
