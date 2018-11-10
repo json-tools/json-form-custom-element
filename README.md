@@ -15,6 +15,8 @@ or as a dependency, in es6
 import 'json-form-custom-element'
 ```
 
+Installation process uses `customElements.define` browser API (which supported by current FireFox and Chrome, may require polyfill in other browsers).
+
 ## Usage
 
 ```html
