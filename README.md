@@ -15,7 +15,7 @@ or as a dependency, in es6
 import 'json-form-custom-element'
 ```
 
-Installation process uses `customElements.define` browser API (which supported by current FireFox and Chrome, may require polyfill in other browsers).
+Installation process uses `customElements.define` browser API (which supported by current FireFox and Chrome, [it may require](https://caniuse.com/#feat=custom-elementsv1) polyfill in other browsers).
 
 ## Usage
 
@@ -58,7 +58,8 @@ Title rendered as label for terminal input fields (leaf nodes of the value), and
 ### Required
 
 Keyword `required` of object type used to identify whether to display * near the label. Optional text fields also have button to erase value displayed.
-  
 
 
-Main json-form repository is here: https://github.com/1602/json-form please report all bugs there. Issues are disabled in this project.
+## Contribution
+
+Main json-form repository is here: https://github.com/json-tools/json-form please report all bugs there. Issues are disabled in this project.
