@@ -27,12 +27,13 @@ init v =
         schema =
             v
                 |> decodeValue (Json.Decode.field "schema" Json.Schema.Definitions.decoder)
-                |> Result.mapError (Debug.log "schema parse error")
+                -- |> Result.mapError (Debug.log "schema parse error")
                 |> Result.withDefault Json.Schema.Definitions.blankSchema
 
         config =
             v
                 |> decodeValue (Json.Decode.field "config" Json.Form.Config.decoder)
+                -- |> Result.mapError (Debug.log "config parse error")
                 |> Result.withDefault Json.Form.Config.defaultConfig
 
         value =
@@ -101,7 +102,7 @@ update message model =
                         |> decodeValue Json.Schema.Definitions.decoder
                         |> Result.withDefault Json.Schema.Definitions.blankSchema
             in
-            initForm schema model.value model.config
+            ( { model | form = model.form |> Json.Form.updateSchema schema }, Cmd.none )
 
         ChangeValue v ->
             let

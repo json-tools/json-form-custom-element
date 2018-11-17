@@ -1,6 +1,26 @@
 # json-form-custom-element
 https://www.webcomponents.org/element/json-form-custom-element
 
+<!---
+```
+<custom-element-demo>
+  <template>
+    <script src="../webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/@ubio/css@1.3.11/index.css">
+    <link rel="import" href="json-form.html">
+    <next-code-block></next-code-block>
+  </template>
+</custom-element-demo>
+```
+-->
+```html
+<json-form
+    schema='{"type":"string","title":"Hello","description":"A brief but helpful description of value","maxLength":5}'
+    value='"world"'
+></json-form>
+```
+
+
 ## Install
 
 You can either use unpkg.com CDN
@@ -35,8 +55,8 @@ Events:
   - change: `CustomEvent` with detail `{ isValid: boolean, value, errors: { [path]: [string] }}`
 
 Styles:
-  - `--object-heading-indent`: padding of a heading of a nested object, default `0px`
   - `--nested-object-padding`: padding of a nested object, default `0px`
+  - `--expandable-section-padding`: padding of an expandable object, default `0 10px`
   - `--form-background`: background of a form, default `#fafafa`
   - `--font-family`: font family for form elements, default `helvetica, sans-serif`
   - `--color-active`: color of active element, default `#27b9cc`
