@@ -50,6 +50,7 @@ Attributes:
   - dense: true | false (boolean) - choose between dense and regular layout
   - textFieldStyle: "outlined" | "filled" (string) - style of text fields
   - name: (string) - name of a form, should be unique on the page, used to generate unique ids of form elements
+  - collapseNestedObjects: (boolean) - make nested json forms expandable (collapsed by default)
 
 Events:
   - change: `CustomEvent` with detail `{ isValid: boolean, value, errors: { [path]: [string] }}`
