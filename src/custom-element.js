@@ -53,6 +53,7 @@ customElements.define('json-form',
             this.app = app;
 
             this._appStyles.textContent = this._config && this._config.customCss || css;
+            this._customStylesApplied = !!(this._config && this._config.customCss);
 
             app.ports.valueUpdated.subscribe(({ value, isValid, errors }) => {
                 const event = new CustomEvent('change', { detail: { value, isValid, errors } });
@@ -87,6 +88,15 @@ customElements.define('json-form',
                     break;
                 case 'config':
                     this._config = JSON.parse(newValue);
+
+                    if (this._config.customCss) {
+                        this._appStyles.textContent = this._config.customCss;
+                        this._customStylesApplied = true;
+                    } else if (this._customStylesApplied) {
+                        this._appStyles.textContent = css;
+                        this._customStylesApplied = false;
+                    }
+
                     if (this.app) {
                         this.app.ports.configChange.send(this._config);
                     }
