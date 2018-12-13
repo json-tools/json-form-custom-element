@@ -27,11 +27,11 @@ customElements.define('json-form',
 
             const appRoot = document.createElement('div');
             const appStyles = document.createElement('style');
-            appStyles.textContent = css;
 
             const shadowRoot = this.attachShadow({mode: 'open'});
             shadowRoot.appendChild(appStyles);
             shadowRoot.appendChild(appRoot);
+            this._appStyles = appStyles;
             this._appRoot = appRoot;
 
             this._schema = readAttribute(this, 'schema', {});
@@ -51,6 +51,8 @@ customElements.define('json-form',
                 }
             });
             this.app = app;
+
+            this._appStyles.textContent = this._config && this._config.customCss || css;
 
             app.ports.valueUpdated.subscribe(({ value, isValid, errors }) => {
                 const event = new CustomEvent('change', { detail: { value, isValid, errors } });

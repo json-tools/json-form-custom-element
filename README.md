@@ -51,6 +51,7 @@ Attributes:
   - textFieldStyle: "outlined" | "filled" (string) - style of text fields
   - name: (string) - name of a form, should be unique on the page, used to generate unique ids of form elements
   - collapseNestedObjects: (boolean) - make nested json forms expandable (collapsed by default)
+  - customCss: (string) - custom stylesheet, replaces builtin styling
 
 Events:
   - change: `CustomEvent` with detail `{ isValid: boolean, value, errors: { [path]: [string] }}`
