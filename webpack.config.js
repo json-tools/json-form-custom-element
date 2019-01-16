@@ -108,7 +108,8 @@ if (TARGET_ENV === "development") {
                             loader: "elm-webpack-loader",
                             // add Elm's debug overlay to output
                             options: {
-                                debug: false
+                                debug: false,
+                                optimize: true
                             }
                         }
                     ]
@@ -151,7 +152,8 @@ if (TARGET_ENV === "production") {
                     exclude: [/elm-stuff/, /node_modules/],
                     use: [
                         {
-                            loader: "elm-webpack-loader"
+                            loader: "elm-webpack-loader",
+                            options: { optimize: true }
                         }
                     ]
                 }
