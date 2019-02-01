@@ -52,6 +52,7 @@ Attributes:
   - name: (string) - name of a form, should be unique on the page, used to generate unique ids of form elements
   - collapseNestedObjects: (boolean) - make nested json forms expandable (collapsed by default)
   - customCss: (string) - custom stylesheet, replaces builtin styling
+  - showErrorIcon: (boolean) - whether to show inline error icon when validation fails (default true)
 
 Events:
   - change: `CustomEvent` with detail `{ isValid: boolean, value, errors: { [path]: [string] }}`
